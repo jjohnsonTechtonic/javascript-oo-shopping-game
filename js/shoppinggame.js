@@ -2,22 +2,55 @@ let gameComplete = false;
 // Define the three constants here
 
 // Define the player object here
-
+const player = {name:"unknown",
+                score:0,
+                items:0,
+                getCurrentScore(){return this.score;},
+                addPoints(points){this.score + points;},
+                deductPoints(points){this.score - points;}
+            };
 // Define the Product class - write the Constructor function for Product class here
-
+class Product{
+    constructor(id,name,price,expiryDate){
+        this.id = id;
+        this.name = name;
+        this.price = price;
+        this.expiryDate = expiryDate;
+    }
+}
 // Complete the dateDiff function
-const dateDiff = (date1, date2) => {};
+const dateDiff = (date1, date2) => {
+    const date1Days = Math.floor(date1.getTime()/(86400000));    
+    const date2Days = Math.floor(date2.getTime()/(86400000));
+    return Math.abs(date1Days - date2Days);
+};
 
 // Here, use Object.defineProperty to create property - daysToExpire
-
+Object.defineProperty(Product.prototype,'daysToExpire',{get: dateDiff(this.expiryDate,new Date())});
 // Add method getDetails to Product here
-
+Product.prototype.getDetails = () => {
+    return `Product Name: ${this.name} , Product Price: ${this.price}`;
+};
 // Define the MagicProduct class here
-
+class MagicProduct extends Product{
+    constructor(id,name,price,expiryDate,points,isBonus){
+        call(this,id,name,price,expiryDate);
+        this.points = 0;
+        this.isBonus = false;
+    }
+}
 // Establish inheritance between Product() & MagicProduct() here
-
+MagicProduct.prototype = Object.create(Product.prototype);
 // Define Rating class here
-
+class Rating{
+    constructor(){
+        this.rate = "";
+    }
+    set rating(value){
+        this.rate = (value > 1 && value <= 4)? "OK":
+        (value >= 5 && value <=7)? "GOOD": (value > 7)? "EXCEPTIONAL": "BAD";
+    }
+}
 // Complete the loadProducts function
 const loadProducts = (map, prodId) => {
     let a = new Array();
@@ -320,6 +353,7 @@ function init(data) {
 
     ///////////////////////////////////////////////////////////////
     const readline = require("readline");
+const { callbackify } = require("util");
     require('colors');
     const rl = readline.createInterface({
         input: process.stdin,
